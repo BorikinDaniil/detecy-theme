@@ -3,33 +3,56 @@
     <div id="detection"
          style="display: none; background-color: canvas; color-scheme: light">
     </div>
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>
+      isDarkFromOS - {{ isDarkFromOS }}
+    </h1>
+    <h1>
+      isForcedDarkChrome - {{ isForcedDarkChrome }}
+    </h1>
+    <h1>
+      isChrome - {{ isChrome }}
+    </h1>
+    <h1>
+      newColorScheme - {{ newColorScheme }}
+    </h1>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  },
+
+  data: () => ({
+    isDarkFromOS: '',
+    isForcedDarkChrome: '',
+    isChrome: '',
+    newColorScheme: '',
+  }),
 
   mounted() {
     if (window.matchMedia) {
       console.log('window.matchMedia', window.matchMedia)
-      const isDarkFromOS = window.matchMedia('prefers-color-scheme: dark').matches;
+      const isDarkFromOS = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.isDarkFromOS = isDarkFromOS
       console.log('isDarkFromOS', isDarkFromOS)
+      console.log('window.matchMedia(prefers-color-scheme: dark', window.matchMedia('(prefers-color-scheme: dark)'))
 
       const detectionDiv = document.querySelector('#detection');
       // If the computed style is not white then the page is in Auto Dark Theme.
       const isForcedDarkChrome = getComputedStyle(detectionDiv).backgroundColor != 'rgb(255, 255, 255)';
       console.log('isForcedDarkChrome', isForcedDarkChrome)
+      this.isForcedDarkChrome = isForcedDarkChrome
 
       const isChrome = navigator.userAgent.indexOf("Chrome") != -1;
       console.log('isChrome', isChrome)
+      this.isChrome = isChrome
+
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+        const newColorScheme = event.matches ? "dark" : "light";
+        console.log('newColorScheme', newColorScheme)
+        this.newColorScheme = newColorScheme
+      });
     }
   },
 }
